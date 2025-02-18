@@ -1,0 +1,38 @@
+.product-title {
+    text-align: center;
+}
+
+/* filtering */
+.filter-controls {
+	text-align: center;
+	margin-bottom: 50px;
+}
+
+.filter-options li {
+	list-style: none;
+	font-size: 18px;
+	color: #1c1c1c;
+	display: inline-block;
+	margin-right: 25px;
+	position: relative;
+	cursor: pointer;
+}
+
+.filter-options li.active:after {
+	opacity: 1;
+}
+
+.filter-options li:after {
+	position: absolute;
+	left: 0;
+	bottom: -2px;
+	width: 100%;
+	height: 2px;
+	background: #f1de0e;
+	content: "";
+	opacity: 0;
+}
+
+.filter-options li:last-child {
+	margin-right: 0;
+}

@@ -1,0 +1,44 @@
+{% extends "assets/base.html" %}
+{% load static %}
+{% block content %}
+
+<section>
+  <div style="align-items: center; text-align: center; margin: 20px 20px; border: 1px solid black;">
+    <span><a href="{% url 'blog/create' %}" style="font-size: 30px; color: chartreuse; text-decoration: none;">Create a blog</a></span>
+  </div>
+</section>
+<section class="pb-5">
+    <div class="container-lg">
+        <h1>Welcome to our Blogs System</h1>
+        <p>This is a basic implementation of an asset management system using Django and Bootstrap.</p>
+    </div>
+
+    <div class="row">
+        {% for b in blogs %}
+        <div class="col-md-4">
+          <article class="post-item card border-0 shadow-sm p-3">
+            <div class="image-holder zoom-effect">
+              <a href="#">
+                <img src="{{b.image.url}}" alt="post" class="card-img-top">
+              </a>
+            </div>
+            <div class="card-body">
+              <div class="post-meta d-flex text-uppercase gap-3 my-2 align-items-center">
+                <div class="meta-date"><svg width="16" height="16"><use xlink:href="#calendar"></use></svg>{{ b.created_at }}</div>
+                <div class="meta-categories"><svg width="16" height="16"><use xlink:href="#category"></use></svg>{{ b.category.name }}</div>
+              </div>
+              <div class="post-header">
+                <h3 class="post-title">
+                  <a href="{% url 'blog/read' blog_id=b.id %}" class="text-decoration-none">{{b.title}}</a>
+                </h3>
+                <p>{{b.body|truncatewords:20}}</p>
+              </div>
+            </div>
+          </article>
+        </div>
+        {% endfor %}
+
+      </div>
+    
+</section>
+{% endblock %}
