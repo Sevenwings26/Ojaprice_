@@ -1,0 +1,19 @@
+{% extends "assets/base.html" %}
+{% load static %}
+{% block content %}
+
+<section class="pb-5">
+    <h2>Create a New Blog</h2>
+    <div class="row">
+        <div class="col-md-8">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+    
+</section>
+
+{% endblock %}

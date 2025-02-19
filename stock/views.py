@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from .models import Category, Product
 from blogs.models import Blog
 
@@ -18,6 +18,17 @@ def index_page(request):
     return render(request, "pages/index.html", context)
 
 
+def product_details(request, slug):
+    # product = Product.objects.get(slug=slug)
+    product = get_object_or_404(Product, slug=slug)  # handles does not exist error
+    context = {
+        "product": product,
+    }
+    return render(request, "pages/product_detail.html", context)
+
+
+
+
 """
 Work on the urls to use slug....
 Thoughts --- 
@@ -26,11 +37,6 @@ Thoughts ---
     combo products should be package products: hamper feels, combination of different food items....
 
 """
-
-
-
-
-
 
 # Create your views here.
 # from django.shortcuts import render, redirect

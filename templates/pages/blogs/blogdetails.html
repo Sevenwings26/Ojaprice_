@@ -1,0 +1,39 @@
+{% extends "assets/base.html" %}
+{% load static %}
+{% block content %}
+
+<section id="" class="">
+
+
+  <div style="display:flex;">
+    <article class="post-item card border-0 shadow-sm p-3">
+      <div class="image-holder zoom-effect">
+        <a href="#">
+          <img src="{{blog.image.url}}" alt="post" class="card-img-top">
+        </a>
+      </div>
+      <div class="card-body">
+        <div class="post-meta d-flex text-uppercase gap-3 my-2 align-items-center">
+          <div class="meta-date"><svg width="16" height="16"><use xlink:href="#calendar"></use></svg>{{ blog.created_at }}</div>
+          <div class="meta-categories"><svg width="16" height="16"><use xlink:href="#category"></use></svg>{{ blog.category.name }}</div>
+        </div>
+        <div class="post-header">
+          <h3 class="post-title">
+            <a href="{% url 'blog/read' slug=blog.slug %}" class="text-decoration-none">{{blog.title}}</a>
+          </h3>
+          <p>{{blog.body}}</p>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <div>
+    <a href="{% url 'blog/update' slug=blog.slug %}">Update</a>
+    <br>
+    <a href="{% url 'blog/delete' slug=blog.slug %}">Delete</a>
+  </div>
+
+
+  </div>
+</section><!-- End Blog Details Section -->
+{% endblock %}

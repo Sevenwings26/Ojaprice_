@@ -173,7 +173,6 @@
 {% comment %} Product categories {% endcomment %}
 <section class="pb-5">
   <div class="container-lg">
-
     <div class="row">
       <div class="col-md-12">
         <div class="section-header d-flex flex-wrap justify-content-between my-4">
@@ -189,16 +188,16 @@
         <ul class="filter-options">
           <li class="active" data-filter="*">All</li>
           {% for category in categories %}
-          <li data-filter=".{{category.name}}">{{category.name}}</li>
+          <li data-filter=".{{category.slug}}">{{category.name}}</li>
           {% endfor %}
         </ul>
       </div>
         <div class="product-grid row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-5">  
           {% for product in products %}
-          <div class="col {{product.category.name }}">
+          <div class="col {{product.category.slug }}">
             <div class="product-item">
               <figure>
-                <a href="index.html" title="Product Title">
+                <a href="{% url 'product_details' slug=product.slug %}" title="Product Title">
                   <img src="{{product.image.url}}" alt="Product Thumbnail" class="tab-image">
                 </a>
               </figure>
@@ -987,7 +986,6 @@
   </div>
 </section>
 
-
 <section id="latest-blog" class="pb-4">
   <div class="container-lg">
     <div class="row">
@@ -1013,7 +1011,7 @@
             </div>
             <div class="post-header">
               <h3 class="post-title">
-                <a href="{% url 'blog/read' blog_id=b.id %}" class="text-decoration-none">{{b.title}}</a>
+                <a href="{% url 'blog/read' slug=b.slug %}" class="text-decoration-none">{{b.title}}</a>
               </h3>
               <p>{{b.body|truncatewords:10}}</p>
             </div>
@@ -1024,7 +1022,6 @@
     </div>
   </div>
 </section>
-
 
 <section class="pb-4 my-4">
   <div class="container-lg">
