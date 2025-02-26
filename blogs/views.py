@@ -1,15 +1,36 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Blog
 from .forms import CreateBlogForm
+# from 
+from django.utils.text import slugify
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+
 
 # Create your views here.
 # def index  
 
 def blogs(request):
+    
     blogs = Blog.objects.all()
+
+    paginate = Paginator(blogs, 3)
+
+    # for page to work 
+    page = request.GET.get('page')
+
+    # # error handling 
+    try:
+        blogs_page = paginate.page(page)
+    except PageNotAnInteger:
+        blogs_page = paginate.page(1)
+    except EmptyPage:
+        blogs_page = paginate.page(paginate.num_pages)
+
     context = {
-        "blogs":blogs
+        # "blogs":blogs
+        "blogs_page":blogs_page
     }
+    
     return render(request, 'pages/blogs/blogs.html', context)
 
 
@@ -34,7 +55,7 @@ def create_blog(request):
         if form.is_valid():
             form.save()
             print("Form Saved")
-            return redirect('blog/read')
+            return redirect('blogs')
         else:
             print("Form is not valid", form.errors)
             return render(request, "pages/blogs/blogcreation.html", {"form":form})

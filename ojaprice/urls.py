@@ -23,6 +23,8 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include('stock.urls')),
     path("", include('blogs.urls')),
+    path("", include('users.urls')),
+    # path("account/", include("django.contrib.auth.urls")), # for ppassword management
 ]
 
 

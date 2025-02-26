@@ -151,6 +151,52 @@ h1,h2,h3,h4,h5,h6 {
   color: var(--bs-dark);
   font-weight: 700;
 }
+
+/*--------------------------------------------------------------
+# Blog
+--------------------------------------------------------------*/
+.blog-pagination {
+  margin-top: 30px;
+  color: #555555;
+}
+
+.blog-pagination ul {
+  display: flex;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.blog-pagination li {
+  margin: 0 5px;
+  transition: 0.3s;
+  border-radius: 10px;
+}
+
+.blog-pagination li a {
+  color: green;
+  padding: 7px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.blog-pagination li.active,
+.blog-pagination li:hover {
+  background: green;
+  color: #fff;
+}
+
+.blog-pagination li.active a,
+.blog-pagination li:hover a {
+  color: green;
+}
+
+
+
+
+
+
 .breadcrumb.text-white {
   --bs-breadcrumb-divider-color: #fff;
   --bs-breadcrumb-item-active-color: var(--bs-primary);

@@ -22,8 +22,75 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
 
+    <!-- write::: user to js -->
+    <script type="text/javascript">
+      var user = "{{request.user}}";
+
+      function getToken(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+          const cookies = document.cookie.split(";");
+          for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === name + "=") {
+              cookieValue = decodeURIComponent(
+                cookie.substring(name.length + 1)
+              );
+              break;
+            }
+          }
+        }
+        return cookieValue;
+      }
+      const csrftoken = getToken("csrftoken");
+
+      // To enable unauthenticated users - to cart
+      function getCookie(name) {
+        // Split cookie string and get all individual name=value pairs in an array
+        var cookieArr = document.cookie.split(";");
+
+        // Loop through the array elements
+        for (var i = 0; i < cookieArr.length; i++) {
+          var cookiePair = cookieArr[i].split("=");
+
+          /* Removing whitespace at the beginning of the cookie name
+            and compare it with the given string */
+          if (name == cookiePair[0].trim()) {
+            // Decode the cookie value and return
+            return decodeURIComponent(cookiePair[1]);
+          }
+        }
+        // Return null if not found
+        return null;
+      }
+      var cart = JSON.parse(getCookie("cart"));
+
+      if (cart == undefined) {
+        cart = {};
+        console.log("Cart was created");
+        document.cookie = "cart=" + JSON.stringify(cart) + ";domain=;path=/"; // cookie will be created for a single domain...
+      }
+
+      console.log("Cart:", cart);
+    </script>
+    
   </head>
   <body>
+    {% for message in messages %}
+    {% if message.tags == 'error' %}
+      <div class="alert alert-warning alert-dismissible fade show sticky-alert" role="alert">
+        <strong>{{ message }}</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% else %}  
+      <div class="alert alert-success alert-dismissible fade show sticky-alert" role="alert">
+        <strong>{{ message }}</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endif %}
+  {% endfor %}
+
 
     {% include "assets/header.html" %}
     {% block content %}
@@ -55,12 +122,47 @@
       });
     </script>
     
+    {% comment %} <script>
+      document.addEventListener('DOMContentLoaded', () => {
+          const addToCartButtons = document.querySelectorAll('.btn-cart');
+      
+          addToCartButtons.forEach(button => {
+              button.addEventListener('click', () => {
+                  const productId = button.getAttribute('data-product-id');
+                  const quantity = button.closest('.row').querySelector('.quantity').value;
+      
+                  fetch('/update_item/', {
+                      method: 'POST',
+                      headers: {
+                          'Content-Type': 'application/json',
+                          'X-CSRFToken': '{{ csrf_token }}'  // Ensure you include the CSRF token
+                      },
+                      body: JSON.stringify({
+                          productId: productId,
+                          action: 'add',
+                          quantity: quantity
+                      })
+                  })
+                  .then(response => response.json())
+                  .then(data => {
+                      console.log('Success:', data);
+                      // Optionally, update the cart UI here
+                  })
+                  .catch((error) => {
+                      console.error('Error:', error);
+                  });
+              });
+          });
+      });
+      </script> {% endcomment %}
     {% include 'assets/footer.html' %}
+    
     
     <script src="{% static 'js/jquery-1.11.0.min.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
     <script src="{% static 'js/plugins.js' %}"></script>
     <script src="{% static 'js/script.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/cart.js' %}"></script>
   </body>
 </html>
