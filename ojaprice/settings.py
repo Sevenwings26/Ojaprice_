@@ -11,6 +11,16 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os 
+
+import environ
+env = environ.Env()
+environ.Env.read_env()
+
+# Environment configuration 
+ENVIRONMENT = env("ENVIRONMENT", default='development')
+# ENVIRONMENT = "production"
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,10 +30,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-x#9ors81*0s++3*sstjk+^lmz76u97qlg6i_u+*-nqcv!+#opb"
+# SECRET_KEY = "django-insecure-x#9ors81*0s++3*sstjk+^lmz76u97qlg6i_u+*-nqcv!+#opb"
+SECRET_KEY=env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# if ENVIRONMENT == "development":
+#     DEBUG = True
+# else:
+#     DEBUG = False
+
 DEBUG = True
+
+
 
 ALLOWED_HOSTS = ["*"]
 
@@ -90,6 +108,16 @@ WSGI_APPLICATION = "ojaprice.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# if ENVIRONMENT == "development":
+#     DATABASES = {
+#         "default": {
+#             "ENGINE": "django.db.backends.sqlite3",
+#             "NAME": BASE_DIR / "db.sqlite3",
+#         }
+#     }
+# else:
+#     pass
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
@@ -145,8 +173,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = "lastborn.ai@gmail.com" 
-EMAIL_HOST_PASSWORD = "losdovzlklynelig"
-# losd ovzl klyn elig
+EMAIL_HOST_USER = env("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
