@@ -17,6 +17,8 @@ import environ
 env = environ.Env()
 environ.Env.read_env()
 
+
+import dj_database_url
 # Environment configuration 
 ENVIRONMENT = env("ENVIRONMENT", default='development')
 # ENVIRONMENT = "production"
@@ -91,6 +93,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "stock.context_processors.cart", 
             ],
         },
     },
@@ -108,22 +111,19 @@ WSGI_APPLICATION = "ojaprice.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-# if ENVIRONMENT == "development":
-#     DATABASES = {
-#         "default": {
-#             "ENGINE": "django.db.backends.sqlite3",
-#             "NAME": BASE_DIR / "db.sqlite3",
-#         }
-#     }
-# else:
-#     pass
-
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+if ENVIRONMENT == "development":
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
     }
-}
+else:
+    pass
+    # DATABASES = {
+    # "default":dj_database_url.parse(env(""))
+    # }
+
 
 
 # Password validation

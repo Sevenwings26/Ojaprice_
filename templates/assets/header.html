@@ -58,10 +58,10 @@
   </defs>
 </svg>
 
-<div class="preloader-wrapper">
+{% comment %} <div class="preloader-wrapper">
   <div class="preloader">
   </div>
-</div>
+</div> {% endcomment %}
 
 <div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="offcanvasCart">
   <div class="offcanvas-header justify-content-center">
@@ -313,11 +313,21 @@
               <svg width="24" height="24"><use xlink:href="#wishlist"></use></svg>
             </a>
           </li>
-          <li>
+          {% comment %} <li>
             <a href="#" class="p-2 mx-1" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCart" aria-controls="offcanvasCart">
               <svg width="24" height="24"><use xlink:href="#shopping-bag"></use></svg>
             </a>
+          </li> {% endcomment %}
+          
+          <li>
+            <a href="{% url 'cart_summary' %}">
+              <img src="{% static 'images/cart.png' %}" class="cart-i" id="cart-icon" />
+              
+              <span class="bg-primary text-white badge ms-1 rounded-pill" id="cart-quantity">0</span>
+
+            </a>
           </li>
+
         </ul>
       </div>
 

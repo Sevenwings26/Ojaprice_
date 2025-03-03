@@ -17,13 +17,33 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/vendor.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/filter.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/custom.css' %}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
 
+    <!-- Store CSRF Token in a Meta Tag -->
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+  </head>
+  <body>
+    {% for message in messages %}
+    {% if message.tags == 'error' %}
+      <div class="alert alert-warning alert-dismissible fade show sticky-alert" role="alert">
+        <strong>{{ message }}</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% else %}  
+      <div class="alert alert-success alert-dismissible fade show sticky-alert" role="alert">
+        <strong>{{ message }}</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endif %}
+  {% endfor %}
+
     <!-- write::: user to js -->
-    <script type="text/javascript">
+    {% comment %} <script type="text/javascript">
       var user = "{{request.user}}";
 
       function getToken(name) {
@@ -55,7 +75,7 @@
           var cookiePair = cookieArr[i].split("=");
 
           /* Removing whitespace at the beginning of the cookie name
-            and compare it with the given string */
+		        and compare it with the given string */
           if (name == cookiePair[0].trim()) {
             // Decode the cookie value and return
             return decodeURIComponent(cookiePair[1]);
@@ -74,95 +94,51 @@
 
       console.log("Cart:", cart);
     </script>
+     {% endcomment %}
+
+     <script>
+      $(document).on('click', '.add-cart', function(e) {
+        e.preventDefault();
+        let product_id = $(this).val();  // Get product ID from button value
+        let quantity = $(this).closest('.button-area').find('.quantity').val(); // Get quantity from input field
+        let csrf_token = $('meta[name="csrf-token"]').attr('content'); // Retrieve CSRF token
     
-  </head>
-  <body>
-    {% for message in messages %}
-    {% if message.tags == 'error' %}
-      <div class="alert alert-warning alert-dismissible fade show sticky-alert" role="alert">
-        <strong>{{ message }}</strong>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-    {% else %}  
-      <div class="alert alert-success alert-dismissible fade show sticky-alert" role="alert">
-        <strong>{{ message }}</strong>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-    {% endif %}
-  {% endfor %}
+        $.ajax({
+          type: 'POST',
+          url: '{% url "cart_add" %}',
+          data: {
+            product_id: product_id,
+            quantity: quantity, // Send quantity to backend
+            csrfmiddlewaretoken: csrf_token,
+            action: 'post'
+          },
+          success: function(json) {
+            console.log("Cart updated:", json);
+            // Update cart quantity in navbar
+            document.getElementById("cart-quantity").textContent = json.cart_quantity;
+          },
+          error: function(xhr, errmsg, err) {
+            console.error("Error:", errmsg);
+          }
+        });
+      });
+    </script>
 
 
     {% include "assets/header.html" %}
     {% block content %}
     {% endblock %}
 
-    <script>
-      document.addEventListener('DOMContentLoaded', () => {
-        const filterOptions = document.querySelectorAll('.filter-options li');
-        const products = document.querySelectorAll('.product-grid .col');
     
-        filterOptions.forEach(option => {
-          option.addEventListener('click', () => {
-            // Remove active class from all options
-            filterOptions.forEach(opt => opt.classList.remove('active'));
-            option.classList.add('active');
-    
-            const filter = option.dataset.filter;
-    
-            // Show/hide products based on filter
-            products.forEach(product => {
-              if (filter === '*' || product.classList.contains(filter.substring(1))) {
-                product.style.display = 'block';
-              } else {
-                product.style.display = 'none';
-              }
-            });
-          });
-        });
-      });
-    </script>
-    
-    {% comment %} <script>
-      document.addEventListener('DOMContentLoaded', () => {
-          const addToCartButtons = document.querySelectorAll('.btn-cart');
-      
-          addToCartButtons.forEach(button => {
-              button.addEventListener('click', () => {
-                  const productId = button.getAttribute('data-product-id');
-                  const quantity = button.closest('.row').querySelector('.quantity').value;
-      
-                  fetch('/update_item/', {
-                      method: 'POST',
-                      headers: {
-                          'Content-Type': 'application/json',
-                          'X-CSRFToken': '{{ csrf_token }}'  // Ensure you include the CSRF token
-                      },
-                      body: JSON.stringify({
-                          productId: productId,
-                          action: 'add',
-                          quantity: quantity
-                      })
-                  })
-                  .then(response => response.json())
-                  .then(data => {
-                      console.log('Success:', data);
-                      // Optionally, update the cart UI here
-                  })
-                  .catch((error) => {
-                      console.error('Error:', error);
-                  });
-              });
-          });
-      });
-      </script> {% endcomment %}
+
     {% include 'assets/footer.html' %}
     
     
-    <script src="{% static 'js/jquery-1.11.0.min.js' %}"></script>
+    <script src="{% static 'js/jquery-1.11.0.min.js' %}"></script>    
     <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
     <script src="{% static 'js/plugins.js' %}"></script>
     <script src="{% static 'js/script.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/cart.js' %}"></script>
+    {% comment %} <script type="text/javascript" src="{% static 'js/cart.js' %}"></script> {% endcomment %}
   </body>
 </html>
